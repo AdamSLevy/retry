@@ -19,6 +19,10 @@
 // IN THE SOFTWARE.
 
 // Package retry provides a reliable, simple way to retry operations.
+//
+// This package was inspired by github.com/cenkalti/backoff but improves on the
+// design by providing Policy types that are composable, re-usable and safe for
+// repeated or concurrent calls to Run.
 package retry
 
 import (
