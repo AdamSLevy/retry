@@ -31,17 +31,19 @@ import (
 // Stop can be returned by Policy.Wait to tell Run to stop.
 const Stop = time.Duration(-1)
 
-// Policy tells Run how long to wait before the next retry.
+// Policy tells Run how long to wait before the next retry of op.
 type Policy interface {
 	// Wait returns a wait time based on the number of previous attempts
 	// and the total amount of time elapsed since the first attempt within
 	// a Run call.
 	//
-	// For the first call to Wait made by a Call to Run, attempts = 1.
+	// After the first failed op, Run calls Wait with attempts = 1 and
+	// total = time.Since(start), where start was the time.Now() when Run
+	// was called.
 	//
-	// Wait returns 0 to retry immediately.
+	// If Wait returns 0, Run retries its op immediately.
 	//
-	// Wait returns Stop to tell Run to return without any further retries.
+	// If Wait returns Stop, Run returns the last op error immediately.
 	//
 	// In order to ensure that a Policy is re-usable across concurrent
 	// calls to Run, Wait should not have any side-effects such as mutating
