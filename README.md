@@ -1,4 +1,4 @@
-# retry [![Travis-CI](https://travis-ci.org/AdamSLevy/retry.svg)](https://travis-ci.org/AdamSLevy/retry) [![GoDoc](https://godoc.org/github.com/AdamSLevy/retry?status.svg)](http://godoc.org/github.com/AdamSLevy/retry) [![Report card](https://goreportcard.com/badge/github.com/AdamSLevy/retry)](https://goreportcard.com/report/github.com/AdamSLevy/retry)
+# retry [![GoDoc](https://godoc.org/github.com/AdamSLevy/retry?status.svg)](http://godoc.org/github.com/AdamSLevy/retry) [![Report card](https://goreportcard.com/badge/github.com/AdamSLevy/retry)](https://goreportcard.com/report/github.com/AdamSLevy/retry) [![Travis-CI](https://travis-ci.org/AdamSLevy/retry.svg)](https://travis-ci.org/AdamSLevy/retry) [![Coverage Status](https://coveralls.io/repos/github/AdamSLevy/retry/badge.svg?branch=master)](https://coveralls.io/github/AdamSLevy/retry?branch=master)
 
 Package retry provides a reliable, simple way to retry operations.
 
