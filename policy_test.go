@@ -34,19 +34,19 @@ func TestPolicy(t *testing.T) {
 		t.Run(test.Name, func(t *testing.T) { testPolicy(t, test) })
 	}
 	t.Run("Randomize", func(t *testing.T) {
-		policy := Randomize{.5, Constant{time.Minute}}
+		policy := Randomize{.5, Constant(time.Minute)}
 		for i := 0; i < 1000; i++ {
 			wait := policy.Wait(0, 0)
 			assert.InDelta(t, time.Minute, wait, .5*float64(time.Minute))
 		}
 	})
 	t.Run("Randomize/overflow", func(t *testing.T) {
-		policy := Randomize{.5, Constant{math.MaxInt64}}
+		policy := Randomize{.5, Constant(math.MaxInt64)}
 		wait := policy.Wait(0, 0)
 		assert.InDelta(t, math.MaxInt64, wait, .5*float64(math.MaxInt64))
 	})
 	t.Run("Randomize/stop", func(t *testing.T) {
-		policy := Randomize{.5, Constant{Stop}}
+		policy := Randomize{.5, Constant(Stop)}
 		wait := policy.Wait(0, 0)
 		assert.Equal(t, Stop, wait)
 	})
@@ -95,12 +95,12 @@ var policyTests = []policyTest{{
 	Wait:   []time.Duration{time.Minute, time.Minute},
 }, {
 	Name:   "LimitTotal",
-	Policy: LimitTotal{3 * time.Minute, Constant{time.Minute}},
+	Policy: LimitTotal{3 * time.Minute, Constant(time.Minute)},
 	Args:   []policyArgs{{1, 0}, {2, 30 * time.Second}, {3, time.Hour}},
 	Wait:   []time.Duration{time.Minute, time.Minute, Stop},
 }, {
 	Name:   "LimitAttempts",
-	Policy: LimitAttempts{2, Constant{time.Minute}},
+	Policy: LimitAttempts{2, Constant(time.Minute)},
 	Args:   []policyArgs{{1, 0}, {2, 30 * time.Second}, {3, time.Hour}},
 	Wait:   []time.Duration{time.Minute, Stop, Stop},
 }, {

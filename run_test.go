@@ -41,7 +41,7 @@ func TestRun(t *testing.T) {
 		testRun(t, runTest{
 			Name:        "ctx canceled",
 			Ctx:         ctx,
-			Policy:      Constant{time.Second},
+			Policy:      Constant(time.Second),
 			Op:          func() error { return fmt.Errorf("failed") },
 			Err:         "failed",
 			NotifyCount: 2,
@@ -52,7 +52,7 @@ func testRun(t *testing.T, test runTest) {
 	assert := assert.New(t)
 
 	if test.Policy == nil {
-		test.Policy = Constant{100}
+		test.Policy = Constant(100)
 	}
 
 	var opCount uint = 1

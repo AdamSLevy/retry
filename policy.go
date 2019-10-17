@@ -50,19 +50,17 @@ type Policy interface {
 	Wait(attempts uint, total time.Duration) (wait time.Duration)
 }
 
-// Immediate is a Policy that always returns 0.
+// Immediate is a Policy that always returns a zero wait time.
 type Immediate struct{}
 
 // Wait always returns c.Fixed.
 func (i Immediate) Wait(uint, time.Duration) time.Duration { return 0 }
 
-// Constant is a Policy that always returns Fixed.
-type Constant struct {
-	Fixed time.Duration
-}
+// Constant is a Policy that always returns a fixed waited time.
+type Constant time.Duration
 
 // Wait always returns c.Fixed.
-func (c Constant) Wait(uint, time.Duration) time.Duration { return c.Fixed }
+func (c Constant) Wait(uint, time.Duration) time.Duration { return time.Duration(c) }
 
 // Linear is a Policy that increases wait time linearly starting from Initial
 // and adding Increment for each additional attempt.
