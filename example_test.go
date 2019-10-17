@@ -29,15 +29,20 @@ import (
 	"github.com/AdamSLevy/retry"
 )
 
-func tryWork(context.Context) error { return nil }
+func workToRetry(context.Context) error { return nil }
 
 func ExampleRun() {
-	// The provided policies can be composed to a custom Policy.
-	policy := retry.LimitTotal{25 * time.Minute,
-		retry.LimitAttempts{10,
-			retry.Max{10 * time.Minute,
+	// The provided policies can be composed to a custom Policy. The
+	// following Policy implements exponential backoff. The policy
+	// increases exponentially by a factor of 1.5 starting from 500
+	// milliseconds with some random variation, up to a max wait time of a
+	// minute. Additionally, the Policy limits retries to 15 attempts or 20
+	// minutes.
+	policy := retry.LimitTotal{20 * time.Minute,
+		retry.LimitAttempts{15,
+			retry.Max{time.Minute,
 				retry.Randomize{.5,
-					retry.Exponential{5 * time.Second, 2}}}}}
+					retry.Exponential{500 * time.Millisecond, 1.5}}}}}
 
 	// A notify function is called before each wait period.
 	notify := func(err error, attempt uint, d time.Duration) {
@@ -48,8 +53,13 @@ func ExampleRun() {
 	// A filter function can be used to omit or wrap certain errors to tell
 	// Run to stop immediately.
 	filter := func(err error) error {
-		if errors.Is(err, errors.New("unrecoverable err")) {
+		if errors.Is(err, errors.New("unrecoverable")) {
+			// Run will return err.
 			return retry.ErrorStop(err)
+		}
+		if errors.Is(err, errors.New("ignorable")) {
+			// Run will return nil.
+			return nil
 		}
 		return err
 	}
@@ -58,7 +68,10 @@ func ExampleRun() {
 	var ctx = context.TODO()
 
 	err := retry.Run(ctx, policy, filter, notify, func() error {
-		return tryWork(ctx)
+		// If your op requires a context.Context you should create a
+		// closure around it. If tryWork returns context.Canceled or
+		// context.DeadlinExceeded Run will return immediately.
+		return workToRetry(ctx)
 	})
 	if err != nil {
 		return

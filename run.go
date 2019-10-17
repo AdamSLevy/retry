@@ -73,13 +73,11 @@ func (t *timeTimer) GetC() <-chan time.Time {
 // p.Wait. The total number of attempts and the total time elapsed since Run
 // was envoked are passed to p.Wait. See Policy for more details.
 //
-// If filter is not nil, all calls to op are wrapped by filter:
-//
-//      op = func() error { return filter(op()) }
-//
-// Use filter to cause Run to return immediately on certain op errors by either
-// returning nil to censor the error, or by wrapping the error with ErrorStop
-// to pass the error up the call stack.
+// If filter is not nil, all calls to op are wrapped by filter: filter(op()).
+// Use a filter to add special handling for certain errors. For example, a
+// filter can cause Run to return immediately by returning nil to censor and
+// error, or by wrapping the error with ErrorStop to pass an error up the call
+// stack.
 //
 // Run always returns the latest filtered op return value. If the error was
 // wrapped by ErrorStop, it is unwrapped, and the original error is returned.
