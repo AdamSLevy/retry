@@ -33,13 +33,13 @@ const Stop = time.Duration(-1)
 
 // Policy tells Run how long to wait before the next retry of op.
 type Policy interface {
-	// Wait returns a wait time based on the number of previous attempts
-	// and the total amount of time elapsed since the first attempt within
-	// a Run call.
+	// Wait returns a wait time based on the number of previous failed
+	// attempts within a call to Run, and the total = time.Since(start),
+	// where start is the time.Now() when Run was called.
 	//
-	// After the first failed op, Run calls Wait with attempts = 1 and
-	// total = time.Since(start), where start was the time.Now() when Run
-	// was called.
+	// For example, after the first failed op, Run calls Wait with attempts
+	// = 1 and a total time roughly equal to how long the first call to op
+	// took.
 	//
 	// If Wait returns 0, Run retries its op immediately.
 	//
